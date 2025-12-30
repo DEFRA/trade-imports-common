@@ -15,5 +15,7 @@
 	  <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

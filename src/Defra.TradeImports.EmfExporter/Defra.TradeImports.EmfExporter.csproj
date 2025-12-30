@@ -21,5 +21,11 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.11" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 </Project>
