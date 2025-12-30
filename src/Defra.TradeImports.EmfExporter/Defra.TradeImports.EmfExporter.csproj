@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	  <AssemblyName>Defra.TradeImports.EmfExporter</AssemblyName>
+	  <RootNamespace>Defra.TradeImports.EmfExporter</RootNamespace>
+	  <IsPackable>true</IsPackable>
+	  <PackageId>Defra.TradeImports.EmfExporter</PackageId>
+	  <VersionPrefix>0.1.0</VersionPrefix>
+	  <PackageDescription>Defra Trade Imports EmfExporter</PackageDescription>
+	  <Company>DEFRA</Company>
+	  <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Amazon.CloudWatch.EMF" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.11" />
+	</ItemGroup>
+
+</Project>

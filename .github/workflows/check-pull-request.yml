@@ -1,0 +1,73 @@
+name: Check Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  pr-validator:
+    name: Run Pull Request Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            9.0
+      # - name: Run unit tests
+      #   run: |
+      #     dotnet test --filter "Category!=IntegrationTest"
+      # - name: Run integration tests
+      #   run: |
+      #     docker compose up -d
+      #     dotnet test --filter "Category=IntegrationTest"
+      # - name: Docker Compose Logs
+      #   if: always()
+      #   run: |
+      #     docker compose logs
+      # - name: Check Dockerfile Builds
+      #   uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
+      #   with:
+      #     context: .
+      #     file: ./Dockerfile
+      #     push: false
+      #     tags: trade-imports-data-api:latest
+      # - name: Check with Trivy
+      #   run: docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image trade-imports-data-api:latest --ignore-unfixed
+      - name: Pack NuGets
+        if: github.actor != 'dependabot[bot]'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          echo "Building a pre-release package for PR #$PR_NUMBER"
+          dotnet pack --no-restore --configuration Release -o ./nupkg \
+            /p:VersionSuffix="pr-$PR_NUMBER.$BUILD_NUMBER"
+      - name: Publish NuGets
+        if: github.actor != 'dependabot[bot]'
+        run: |
+          dotnet nuget push ./nupkg/*.nupkg \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate
+      # - name: Generate OpenAPI specification
+      #   run: make generate-openapi-spec
+      # - name: Save OpenApi specification
+      #   uses: actions/upload-artifact@v6
+      #   with:
+      #     name: openapi.json
+      #     path: openapi.json
+  # sonarcloud-scan:
+  #   name: CDP SonarCloud Scan
+  #   uses: ./.github/workflows/sonarcloud.yml
+  #   needs: pr-validator
+  #   secrets: inherit
