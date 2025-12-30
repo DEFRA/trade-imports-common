@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{02EA68
 		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{76A93979-0807-4E46-B9FE-DB6DBDFB0A04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2BF836E-52E6-4A2F-B5A5-868D15CB7107}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{719C1F87-625B-4C49-A654-B3F61184A3C4} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A826B76B-4773-4094-83F3-FC612F620A80}
