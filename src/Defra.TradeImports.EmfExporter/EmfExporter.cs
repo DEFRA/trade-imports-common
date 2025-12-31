@@ -60,7 +60,11 @@ public static class EmfExporter
             metricsLogger.SetDimensions(dimensionSet);
             var name = instrument.Name;
 
-            metricsLogger.PutMetric(name, Convert.ToDouble(measurement), Enum.Parse<Unit>(instrument.Unit!));
+            metricsLogger.PutMetric(
+                name,
+                Convert.ToDouble(measurement),
+                Enum.Parse<Unit>(instrument.Unit!)
+            );
             metricsLogger.Flush();
         }
         catch (Exception ex)

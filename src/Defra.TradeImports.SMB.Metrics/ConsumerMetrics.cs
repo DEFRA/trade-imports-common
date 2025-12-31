@@ -45,12 +45,17 @@ public class ConsumerMetrics
         );
         _consumeDuration = meter.CreateHistogram<double>(
             "MessagingConsumeDuration",
-		  "Milliseconds",
+            "Milliseconds",
             "Elapsed time spent consuming a message, in millis"
         );
     }
 
-    public void Start(string path, string consumerName, string resourceType, string? subResourceType)
+    public void Start(
+        string path,
+        string consumerName,
+        string resourceType,
+        string? subResourceType
+    )
     {
         var tagList = BuildTags(path, consumerName, resourceType, subResourceType);
 
@@ -100,7 +105,12 @@ public class ConsumerMetrics
         _consumeDuration.Record(milliseconds, tagList);
     }
 
-    private static TagList BuildTags(string path, string consumerName, string resourceType, string? subResourceType)
+    private static TagList BuildTags(
+        string path,
+        string consumerName,
+        string resourceType,
+        string? subResourceType
+    )
     {
         return new TagList
         {

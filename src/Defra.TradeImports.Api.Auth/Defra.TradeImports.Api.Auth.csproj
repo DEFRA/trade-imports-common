@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  	   <AssemblyName>Defra.TradeImports.Api.Auth</AssemblyName>
+    <RootNamespace>Defra.TradeImports.Api.Auth</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Defra.TradeImports.Api.Auth</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <PackageDescription>Defra Trade Imports Api.Auth</PackageDescription>
+    <Company>DEFRA</Company>
+    <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>	 
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>	
+	<ItemGroup>
+	  <None Update="README.md">
+	    <PackagePath>\</PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+
+
+
+</Project>

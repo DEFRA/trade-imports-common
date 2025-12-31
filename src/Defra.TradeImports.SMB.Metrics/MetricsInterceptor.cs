@@ -13,7 +13,11 @@ public sealed class MetricsInterceptor<TMessage>(
 ) : IConsumerInterceptor<TMessage>
     where TMessage : notnull
 {
-    public async Task<object> OnHandle(TMessage message, Func<Task<object>> next, IConsumerContext context)
+    public async Task<object> OnHandle(
+        TMessage message,
+        Func<Task<object>> next,
+        IConsumerContext context
+    )
     {
         var startingTimestamp = TimeProvider.System.GetTimestamp();
         var consumerName = context.Consumer.GetType().Name;
@@ -30,17 +34,41 @@ public sealed class MetricsInterceptor<TMessage>(
         catch (HttpRequestException httpRequestException)
             when (httpRequestException.StatusCode == HttpStatusCode.Conflict)
         {
-            consumerMetrics.Warn(context.Path, consumerName, resourceType, subResourceType, httpRequestException);
+            consumerMetrics.Warn(
+                context.Path,
+                consumerName,
+                resourceType,
+                subResourceType,
+                httpRequestException
+            );
 
-            MetricsInterceptorLogs.ConsumerWarn(logger, consumerName, resourceId, resourceType, subResourceType);
+            MetricsInterceptorLogs.ConsumerWarn(
+                logger,
+                consumerName,
+                resourceId,
+                resourceType,
+                subResourceType
+            );
 
             throw;
         }
         catch (Exception exception)
         {
-            consumerMetrics.Faulted(context.Path, consumerName, resourceType, subResourceType, exception);
+            consumerMetrics.Faulted(
+                context.Path,
+                consumerName,
+                resourceType,
+                subResourceType,
+                exception
+            );
 
-            MetricsInterceptorLogs.ConsumerFaulted(logger, consumerName, resourceId, resourceType, subResourceType);
+            MetricsInterceptorLogs.ConsumerFaulted(
+                logger,
+                consumerName,
+                resourceId,
+                resourceType,
+                subResourceType
+            );
 
             throw;
         }

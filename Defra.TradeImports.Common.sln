@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2BF836E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.Metrics", "src\Defra.TradeImports.SMB.Metrics\Defra.TradeImports.SMB.Metrics.csproj", "{A85C4253-8C00-595E-3DE0-59F2A370769F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Api.Auth", "src\Defra.TradeImports.Api.Auth\Defra.TradeImports.Api.Auth.csproj", "{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 		{E548C18A-6B33-4D75-BF91-29A4E71AB711} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 		{A85C4253-8C00-595E-3DE0-59F2A370769F} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A826B76B-4773-4094-83F3-FC612F620A80}
