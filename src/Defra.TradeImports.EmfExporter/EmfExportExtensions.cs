@@ -14,7 +14,7 @@ public static class EmfExportExtensions
     )
     {
         var config = builder.ApplicationServices.GetRequiredService<IConfiguration>();
-        var enabled = config.GetValue("AWS_EMF_ENABLED", true);
+        var enabled = config.GetValue("AWS_EMF_ENABLED", false);
 
         if (enabled)
         {
@@ -22,7 +22,7 @@ public static class EmfExportExtensions
             var env = config.GetValue<string>("AWS_EMF_ENVIRONMENT") ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(ns) && env.Equals("Local"))
-                ns = Assembly.GetEntryAssembly()?.EntryPoint?.DeclaringType?.Namespace;
+                ns = Assembly.GetEntryAssembly()?.DefinedTypes.First(x => !string.IsNullOrEmpty(x.Namespace)).Namespace;
 
             if (string.IsNullOrWhiteSpace(ns))
                 throw new InvalidOperationException(
