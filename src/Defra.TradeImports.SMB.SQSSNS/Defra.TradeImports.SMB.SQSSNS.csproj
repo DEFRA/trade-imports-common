@@ -21,4 +21,8 @@
 		<PackageReference Include="SlimMessageBus.Host.AmazonSQS" Version="3.3.6" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
 </Project>
