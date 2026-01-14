@@ -20,6 +20,9 @@ public static class SqsMessageBusSettingsExtensions
 			settings.SnsClientConfig.AuthenticationRegion = region;
 			settings.SnsClientConfig.RegionEndpoint = regionEndpoint;
 			settings.SnsClientConfig.ServiceURL = configuration.GetValue<string>("SQS_Endpoint");
+			settings.SqsClientConfig.AuthenticationRegion = region;
+			settings.SqsClientConfig.RegionEndpoint = regionEndpoint;
+			settings.SqsClientConfig.ServiceURL = configuration.GetValue<string>("SQS_Endpoint");
 			settings.UseStaticCredentials(clientId, clientSecret);
 		}
 		else
