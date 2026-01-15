@@ -1,0 +1,96 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36616.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.CompressedSerializer", "src\Defra.TradeImports.SMB.CompressedSerializer\Defra.TradeImports.SMB.CompressedSerializer.csproj", "{938BB7B1-EA1F-7083-05AF-4A50B47B25B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.EmfExporter", "src\Defra.TradeImports.EmfExporter\Defra.TradeImports.EmfExporter.csproj", "{E548C18A-6B33-4D75-BF91-29A4E71AB711}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\check-pull-request.yml = .github\workflows\check-pull-request.yml
+		.github\workflows\publish-hotfix.yml = .github\workflows\publish-hotfix.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{76A93979-0807-4E46-B9FE-DB6DBDFB0A04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2BF836E-52E6-4A2F-B5A5-868D15CB7107}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.Metrics", "src\Defra.TradeImports.SMB.Metrics\Defra.TradeImports.SMB.Metrics.csproj", "{A85C4253-8C00-595E-3DE0-59F2A370769F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Api.Auth", "src\Defra.TradeImports.Api.Auth\Defra.TradeImports.Api.Auth.csproj", "{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.SQSSNS", "src\Defra.TradeImports.SMB.SQSSNS\Defra.TradeImports.SMB.SQSSNS.csproj", "{B7E9718A-D55C-4D66-88E8-70A13F103C7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.CompressedSerializer.Tests", "tests\Defra.TradeImports.SMB.CompressedSerializer\Defra.TradeImports.SMB.CompressedSerializer.Tests.csproj", "{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Api.Auth.Tests", "tests\Defra.TradeImports.Api.Auth.Tests\Defra.TradeImports.Api.Auth.Tests.csproj", "{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Tracing", "src\Defra.TradeImports.Tracing\Defra.TradeImports.Tracing.csproj", "{EDC539FF-627B-4907-9A3D-30C15967440B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.Tracing", "src\Defra.TradeImports.SMB.Tracing\Defra.TradeImports.SMB.Tracing.csproj", "{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A85C4253-8C00-595E-3DE0-59F2A370769F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7E9718A-D55C-4D66-88E8-70A13F103C7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7E9718A-D55C-4D66-88E8-70A13F103C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7E9718A-D55C-4D66-88E8-70A13F103C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7E9718A-D55C-4D66-88E8-70A13F103C7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{938BB7B1-EA1F-7083-05AF-4A50B47B25B5} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{E548C18A-6B33-4D75-BF91-29A4E71AB711} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{A85C4253-8C00-595E-3DE0-59F2A370769F} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{B7E9718A-D55C-4D66-88E8-70A13F103C7B} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168} = {E2BF836E-52E6-4A2F-B5A5-868D15CB7107}
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3} = {E2BF836E-52E6-4A2F-B5A5-868D15CB7107}
+		{EDC539FF-627B-4907-9A3D-30C15967440B} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A826B76B-4773-4094-83F3-FC612F620A80}
+	EndGlobalSection
+EndGlobal
