@@ -27,6 +27,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.SQSS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.CompressedSerializer.Tests", "tests\Defra.TradeImports.SMB.CompressedSerializer\Defra.TradeImports.SMB.CompressedSerializer.Tests.csproj", "{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Api.Auth.Tests", "tests\Defra.TradeImports.Api.Auth.Tests\Defra.TradeImports.Api.Auth.Tests.csproj", "{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.Tracing", "src\Defra.TradeImports.Tracing\Defra.TradeImports.Tracing.csproj", "{EDC539FF-627B-4907-9A3D-30C15967440B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.TradeImports.SMB.Tracing", "src\Defra.TradeImports.SMB.Tracing\Defra.TradeImports.SMB.Tracing.csproj", "{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +63,18 @@ Global
 		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC539FF-627B-4907-9A3D-30C15967440B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +86,9 @@ Global
 		{838ACDE0-2C9F-44AC-A03D-EFE885D41FAF} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 		{B7E9718A-D55C-4D66-88E8-70A13F103C7B} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 		{BC7941EB-E6F0-4F92-BA66-06E7FAAE8168} = {E2BF836E-52E6-4A2F-B5A5-868D15CB7107}
+		{3F043BC6-C5F6-458D-9044-CAFAAECEECB3} = {E2BF836E-52E6-4A2F-B5A5-868D15CB7107}
+		{EDC539FF-627B-4907-9A3D-30C15967440B} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
+		{0D06B555-B3F2-4018-8CAA-97CCDB00EB81} = {76A93979-0807-4E46-B9FE-DB6DBDFB0A04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A826B76B-4773-4094-83F3-FC612F620A80}
