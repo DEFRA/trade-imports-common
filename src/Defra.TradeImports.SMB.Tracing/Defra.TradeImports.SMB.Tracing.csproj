@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.HeaderPropagation" Version="9.0.12" />
-    <PackageReference Include="SlimMessageBus.Host.AmazonSQS" Version="3.3.7-rc200" />
+    <PackageReference Include="SlimMessageBus.Host.AmazonSQS" Version="3.3.6" />
   </ItemGroup>
 
   <ItemGroup>
