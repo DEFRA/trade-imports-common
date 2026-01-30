@@ -8,7 +8,7 @@
     <RootNamespace>Defra.TradeImports.SMB.CompressedSerializer</RootNamespace>
     <IsPackable>true</IsPackable>
     <PackageId>Defra.TradeImports.SMB.CompressedSerializer</PackageId>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.1.1</VersionPrefix>
     <PackageDescription>Defra Trade Imports Slim Message Bus Compressed Serializer</PackageDescription>
     <Company>DEFRA</Company>
     <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>

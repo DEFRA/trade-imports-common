@@ -182,10 +182,9 @@ public class CompressedJsonMessageSerializer
 		object transportMessage
 	)
 	{
-		var compressedBytes = Convert.FromBase64String(payload);
 		return !TryGetGzip(headers)
-			? DeserializeUncompressed(compressedBytes, messageType) // HOT PATH: no compression
-			: DeserializeGzip(compressedBytes, messageType);  // COLD PATH: gzip
+			? JsonSerializer.Deserialize(payload, messageType, Options)! // HOT PATH: no compression
+			: DeserializeGzip(Convert.FromBase64String(payload), messageType);  // COLD PATH: gzip
 	}
 
 	#endregion
