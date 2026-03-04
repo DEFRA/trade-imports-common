@@ -41,7 +41,7 @@ public static class EndpointRouteBuilderExtensions
 			.ProducesProblem(StatusCodes.Status405MethodNotAllowed)
 			.ProducesProblem(StatusCodes.Status500InternalServerError);
 
-	    if (string.IsNullOrEmpty(policyName))
+	    if (!string.IsNullOrEmpty(policyName))
 	    {
             route.RequireAuthorization(policyName);
 		}
@@ -75,7 +75,7 @@ public static class EndpointRouteBuilderExtensions
 		    .ProducesProblem(StatusCodes.Status405MethodNotAllowed)
 		    .ProducesProblem(StatusCodes.Status500InternalServerError);
 
-	    if (string.IsNullOrEmpty(policyName))
+	    if (!string.IsNullOrEmpty(policyName))
 	    {
 		    route.RequireAuthorization(policyName);
 	    }
@@ -104,7 +104,7 @@ public static class EndpointRouteBuilderExtensions
 		    .ProducesProblem(StatusCodes.Status405MethodNotAllowed)
 		    .ProducesProblem(StatusCodes.Status500InternalServerError);
 
-	    if (string.IsNullOrEmpty(policyName))
+	    if (!string.IsNullOrEmpty(policyName))
 	    {
 		    route.RequireAuthorization(policyName);
 	    }
@@ -128,7 +128,7 @@ public static class EndpointRouteBuilderExtensions
 		    .ProducesProblem(StatusCodes.Status403Forbidden)
 		    .ProducesProblem(StatusCodes.Status500InternalServerError);
 
-	    if (string.IsNullOrEmpty(policyName))
+	    if (!string.IsNullOrEmpty(policyName))
 	    {
 		    route.RequireAuthorization(policyName);
 	    }
