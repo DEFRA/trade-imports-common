@@ -135,15 +135,15 @@ public static class EndpointRouteBuilderExtensions
 	}
 
 
-    private static Task<IResult> Execute(Func<Task<IResult>> func)
+    private static async Task<IResult> Execute(Func<Task<IResult>> func)
     {
 	    try
 	    {
-		   return func();
+		   return await func();
 	    }
 	    catch (Exception)
 	    {
-		    return Task.FromResult(Results.InternalServerError());
+		    return Results.InternalServerError();
 	    }
 	}
 }
