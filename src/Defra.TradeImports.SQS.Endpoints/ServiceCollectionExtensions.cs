@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Defra.TradeImports.SQS.Endpoints;
 
@@ -8,7 +9,7 @@ public static class ServiceCollectionExtensions
 	{
 		ArgumentNullException.ThrowIfNull(services);
 
-		services.AddSingleton<ISqsDeadLetterService, SqsDeadLetterService>();
+		services.TryAddSingleton<ISqsDeadLetterService, SqsDeadLetterService>();
 
 		return services;
 	}

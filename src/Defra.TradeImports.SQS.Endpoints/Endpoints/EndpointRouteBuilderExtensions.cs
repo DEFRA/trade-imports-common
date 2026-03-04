@@ -9,7 +9,7 @@ public static class EndpointRouteBuilderExtensions
 {
     public static void MapDeadLetterQueueEndpoints(this IEndpointRouteBuilder app, string queueName, string dqlQueueName, string pattern = "admin/dlq", string? policyName = null, params string[] tags)
     {
-	    var route = app.MapPost($"{pattern}/redrive", async (
+	    var route = app.MapPost($"{pattern}/redrive", (
 		    [FromServices] ISqsDeadLetterService deadLetterService,
 		    CancellationToken cancellationToken) =>
 	    {
@@ -47,7 +47,7 @@ public static class EndpointRouteBuilderExtensions
 		}
 
 
-	    route = app.MapPost($"{pattern}/remove-message", async (
+	    route = app.MapPost($"{pattern}/remove-message", (
 			    string messageId,
 			    [FromServices] ISqsDeadLetterService deadLetterService,
 			    CancellationToken cancellationToken) =>
@@ -80,7 +80,7 @@ public static class EndpointRouteBuilderExtensions
 		    route.RequireAuthorization(policyName);
 	    }
 
-	    route = app.MapPost($"{pattern}/drain", async (
+	    route = app.MapPost($"{pattern}/drain", (
 			    [FromServices] ISqsDeadLetterService deadLetterService,
 			    CancellationToken cancellationToken) =>
 		    {
@@ -109,7 +109,7 @@ public static class EndpointRouteBuilderExtensions
 		    route.RequireAuthorization(policyName);
 	    }
 
-	    route = app.MapGet($"{pattern}/count", async (
+	    route = app.MapGet($"{pattern}/count", (
 			    [FromServices] ISqsDeadLetterService deadLetterService,
 			    CancellationToken cancellationToken) =>
 		    {
