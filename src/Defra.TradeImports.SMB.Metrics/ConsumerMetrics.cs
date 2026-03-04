@@ -4,12 +4,6 @@ using System.Diagnostics.Metrics;
 
 namespace Defra.TradeImports.SMB.Metrics;
 
-////[ExcludeFromCodeCoverage]
-////public static class MetricNames
-////{
-////    public const string MeterName = "Defra.TradeImportsDecisionDeriver.Deriver";
-////}
-
 [ExcludeFromCodeCoverage]
 public class ConsumerMetrics
 {
@@ -25,27 +19,27 @@ public class ConsumerMetrics
 
         _consumeTotal = meter.CreateCounter<long>(
             "MessagingConsume",
-            "count",
+            "COUNT",
             description: "Number of messages consumed"
         );
         _consumeFaultTotal = meter.CreateCounter<long>(
             "MessagingConsumeErrors",
-            "count",
+			"COUNT",
             description: "Number of message consume faults"
         );
         _consumeWarnTotal = meter.CreateCounter<long>(
             "MessagingConsumeWarnings",
-            "count",
+			"COUNT",
             description: "Number of message consume warnings"
         );
         _consumerInProgress = meter.CreateCounter<long>(
             "MessagingConsumeActive",
-            "count",
+			"COUNT",
             description: "Number of consumers in progress"
         );
         _consumeDuration = meter.CreateHistogram<double>(
             "MessagingConsumeDuration",
-            "Milliseconds",
+			"MILLISECONDS",
             "Elapsed time spent consuming a message, in millis"
         );
     }
