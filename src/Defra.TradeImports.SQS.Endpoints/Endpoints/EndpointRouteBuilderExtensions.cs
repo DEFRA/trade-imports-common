@@ -7,7 +7,7 @@ namespace Defra.TradeImports.SQS.Endpoints.Endpoints;
 
 public static class EndpointRouteBuilderExtensions
 {
-    public static void MapDeadLetterQueueEndpoints(this IEndpointRouteBuilder app, string queueName, string dqlQueueName, string pattern = "admin/dlq", string? policyName = null, params string[] tags)
+    public static void MapDeadLetterQueueEndpoints(this IEndpointRouteBuilder app, string queueName, string dqlQueueName, string pattern = "admin/dlq", string? policyName = null, string? nameSuffix = null, params string[] tags)
     {
 	    var route = app.MapPost($"{pattern}/redrive", (
 		    [FromServices] ISqsDeadLetterService deadLetterService,
@@ -31,7 +31,7 @@ public static class EndpointRouteBuilderExtensions
 
 			
 		})
-		.WithName("Redrive")
+		.WithName(string.IsNullOrEmpty(nameSuffix) ? "Redrive" : $"Redrive_{nameSuffix}")
 		.WithTags(tags)
 			.WithSummary("Initiates redrive of messages from the dead letter queue")
 			.WithDescription("Redrives all messages on the resource events dead letter queue")
@@ -63,7 +63,7 @@ public static class EndpointRouteBuilderExtensions
 					return Results.Content(result, "text/plain; charset=utf-8");
 				});
 		    })
-		    .WithName("RemoveMessage")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "RemoveMessage" : $"RemoveMessage_{nameSuffix}")
 		    .WithTags(tags)
 		    .WithSummary("Initiates removal of message from the dead letter queue")
 		    .WithDescription(
@@ -94,7 +94,7 @@ public static class EndpointRouteBuilderExtensions
 				    return Results.Ok();
 			    });
 		    })
-		    .WithName("Drain")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Drain" : $"Drain_{nameSuffix}")
 		    .WithTags(tags)
 		    .WithSummary("Initiates drain of all messages from the dead letter queue")
 		    .WithDescription("Drains all messages on the resource events dead letter queue")
@@ -119,7 +119,7 @@ public static class EndpointRouteBuilderExtensions
 					return Results.Ok(new { DeadLetterQueueCount = deadLetterQueueCount });
 				});
 		    })
-			.WithName("Count")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Count" : $"Count_{nameSuffix}")
 		    .WithTags("Admin")
 		    .WithSummary("Gets the count of messages on the resource events dead letter queue")
 		    .WithDescription("Gets the count of messages on the resource events dead letter queue")
