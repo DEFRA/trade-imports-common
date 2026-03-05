@@ -120,7 +120,7 @@ public static class EndpointRouteBuilderExtensions
 				});
 		    })
 		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Count" : $"Count_{nameSuffix}")
-		    .WithTags("Admin")
+		    .WithTags(tags)
 		    .WithSummary("Gets the count of messages on the resource events dead letter queue")
 		    .WithDescription("Gets the count of messages on the resource events dead letter queue")
 		    .Produces(StatusCodes.Status200OK)
