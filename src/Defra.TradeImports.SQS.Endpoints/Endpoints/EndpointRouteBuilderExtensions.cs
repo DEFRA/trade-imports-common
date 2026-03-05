@@ -31,7 +31,7 @@ public static class EndpointRouteBuilderExtensions
 
 			
 		})
-		.WithName(string.IsNullOrEmpty(nameSuffix) ? "Redrive" : $"{nameSuffix}_Redrive")
+		.WithName(string.IsNullOrEmpty(nameSuffix) ? "Redrive" : $"Redrive_{nameSuffix}")
 		.WithTags(tags)
 			.WithSummary("Initiates redrive of messages from the dead letter queue")
 			.WithDescription("Redrives all messages on the resource events dead letter queue")
@@ -63,7 +63,7 @@ public static class EndpointRouteBuilderExtensions
 					return Results.Content(result, "text/plain; charset=utf-8");
 				});
 		    })
-		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "RemoveMessage" : $"{nameSuffix}_RemoveMessage")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "RemoveMessage" : $"RemoveMessage_{nameSuffix}")
 		    .WithTags(tags)
 		    .WithSummary("Initiates removal of message from the dead letter queue")
 		    .WithDescription(
@@ -94,7 +94,7 @@ public static class EndpointRouteBuilderExtensions
 				    return Results.Ok();
 			    });
 		    })
-		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Drain" : $"{nameSuffix}_Drain")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Drain" : $"Drain_{nameSuffix}")
 		    .WithTags(tags)
 		    .WithSummary("Initiates drain of all messages from the dead letter queue")
 		    .WithDescription("Drains all messages on the resource events dead letter queue")
@@ -119,7 +119,7 @@ public static class EndpointRouteBuilderExtensions
 					return Results.Ok(new { DeadLetterQueueCount = deadLetterQueueCount });
 				});
 		    })
-		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Count" : $"{nameSuffix}_Count")
+		    .WithName(string.IsNullOrEmpty(nameSuffix) ? "Count" : $"Count_{nameSuffix}")
 		    .WithTags("Admin")
 		    .WithSummary("Gets the count of messages on the resource events dead letter queue")
 		    .WithDescription("Gets the count of messages on the resource events dead letter queue")
