@@ -18,6 +18,6 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SlimMessageBus.Host.Serialization.SystemTextJson" Version="3.3.6" />
+    <PackageReference Include="SlimMessageBus.Host.Serialization.SystemTextJson" Version="3.4.0" />
   </ItemGroup>
 </Project>

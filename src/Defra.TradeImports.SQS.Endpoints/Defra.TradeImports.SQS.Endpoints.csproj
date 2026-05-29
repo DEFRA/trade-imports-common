@@ -17,9 +17,9 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.Core" Version="4.0.3.14" />
-		<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.22" />
-		<PackageReference Include="AWSSDK.SQS" Version="4.0.2.14" />
+		<PackageReference Include="AWSSDK.Core" Version="4.0.7.3" />
+		<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.4.1" />
+		<PackageReference Include="AWSSDK.SQS" Version="4.0.2.32" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
