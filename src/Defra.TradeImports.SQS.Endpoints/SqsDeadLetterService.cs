@@ -38,7 +38,7 @@ public class SqsDeadLetterService(IAmazonSQS amazonSqs, ILogger<SqsDeadLetterSer
                 cancellationToken
             );
 
-            var destinationeAttributes = await amazonSqs.GetQueueAttributesAsync(
+            var destinationAttributes = await amazonSqs.GetQueueAttributesAsync(
                 new GetQueueAttributesRequest
                 {
                     QueueUrl = destinationQueueUrl,
@@ -49,7 +49,7 @@ public class SqsDeadLetterService(IAmazonSQS amazonSqs, ILogger<SqsDeadLetterSer
             var request = new StartMessageMoveTaskRequest
             {
                 SourceArn = sourceAttributes.QueueARN,
-                DestinationArn = destinationeAttributes.QueueARN,
+                DestinationArn = destinationAttributes.QueueARN,
             };
 
             var response = await amazonSqs.StartMessageMoveTaskAsync(request, cancellationToken);
@@ -170,18 +170,18 @@ public class SqsDeadLetterService(IAmazonSQS amazonSqs, ILogger<SqsDeadLetterSer
                 };
 
                 var deleteResponse = await amazonSqs.DeleteMessageBatchAsync(deleteRequest, cancellationToken);
-                if (deleteResponse.HttpStatusCode != HttpStatusCode.OK || deleteResponse.Failed.Count > 0)
+                if (deleteResponse.HttpStatusCode != HttpStatusCode.OK || deleteResponse.Failed?.Count > 0)
                 {
                     logger.LogWarning("Failed to remove a batch of message(s), stopping");
 
                     return false;
                 }
 
-                removed += deleteResponse.Successful.Count;
+                removed += deleteResponse.Successful?.Count ?? 0;
 
                 logger.LogInformation(
                     "Removed batch of {Total} message(s), total so far {Removed}",
-                    deleteResponse.Successful.Count,
+                    deleteResponse.Successful?.Count ?? 0,
                     removed
                 );
 
