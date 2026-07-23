@@ -1,13 +1,18 @@
-using System.Net;
+using System.Collections;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Amazon.SQS.Util;
+
 using FluentAssertions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+
+using System.Net;
 
 namespace Defra.TradeImports.SQS.Endpoints.Tests;
 
@@ -238,8 +243,9 @@ public class SqsDeadLetterServiceTests
         result.Should().Be("Exception, check logs");
     }
 
-    [Fact]
-    public async Task When_drain_successful_Then_return_as_expected()
+    [Theory]
+    [ClassData(typeof(DrainTestData))]
+    public async Task When_drain_successful_Then_return_as_expected(DeleteMessageBatchResponse deleteMessageBatchResponse)
     {
         const string messageId = "messageId";
         const string receiptHandle = "receiptHandle";
@@ -263,16 +269,7 @@ public class SqsDeadLetterServiceTests
                     && x.Entries[0].ReceiptHandle == receiptHandle
                 )
             )
-            .Returns(
-                Task.FromResult(
-                    new DeleteMessageBatchResponse
-                    {
-                        HttpStatusCode = HttpStatusCode.OK,
-                        Failed = [],
-                        Successful = [],
-                    }
-                )
-            );
+            .Returns(Task.FromResult(deleteMessageBatchResponse));
 
         var result = await _resourceEventsDeadLetterService.Drain(QueueNameDeadLetter, CancellationToken.None);
 
@@ -339,26 +336,26 @@ public class SqsDeadLetterServiceTests
     [Fact]
     public async Task When_get_count_successful_Then_return_count()
     {
-	    const string queueUrl = "queueUrl";
-	    _amazonSqs
-		    .GetQueueUrlAsync(Arg.Is<GetQueueUrlRequest>(x => x.QueueName == QueueNameDeadLetter))
-		    .Returns(Task.FromResult(new GetQueueUrlResponse { QueueUrl = queueUrl }));
+        const string queueUrl = "queueUrl";
+        _amazonSqs
+            .GetQueueUrlAsync(Arg.Is<GetQueueUrlRequest>(x => x.QueueName == QueueNameDeadLetter))
+            .Returns(Task.FromResult(new GetQueueUrlResponse { QueueUrl = queueUrl }));
 
-	    _amazonSqs
-		    .GetQueueAttributesAsync(Arg.Any<GetQueueAttributesRequest>())
-		    .Returns(
-			    Task.FromResult(
-				    new GetQueueAttributesResponse()
-				    {
-					    HttpStatusCode = HttpStatusCode.OK,
-					    Attributes = new Dictionary<string, string>() { { "ApproximateNumberOfMessages", "1" } },
-				    }
-			    )
-		    );
+        _amazonSqs
+            .GetQueueAttributesAsync(Arg.Any<GetQueueAttributesRequest>())
+            .Returns(
+                Task.FromResult(
+                    new GetQueueAttributesResponse()
+                    {
+                        HttpStatusCode = HttpStatusCode.OK,
+                        Attributes = new Dictionary<string, string>() { { "ApproximateNumberOfMessages", "1" } },
+                    }
+                )
+            );
 
-	    var result = await _resourceEventsDeadLetterService.GetCount(QueueNameDeadLetter, CancellationToken.None);
+        var result = await _resourceEventsDeadLetterService.GetCount(QueueNameDeadLetter, CancellationToken.None);
 
-	    result.Should().Be(1);
+        result.Should().Be(1);
     }
 
     [Fact]
@@ -369,5 +366,16 @@ public class SqsDeadLetterServiceTests
 	    var result = await _resourceEventsDeadLetterService.GetCount(QueueNameDeadLetter, CancellationToken.None);
 
 	    result.Should().Be(0);
+    }
+
+    internal class DrainTestData : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return [new DeleteMessageBatchResponse { HttpStatusCode = HttpStatusCode.OK, Failed = null, Successful = null }];
+            yield return [new DeleteMessageBatchResponse { HttpStatusCode = HttpStatusCode.OK, Failed = [], Successful = [] }];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
