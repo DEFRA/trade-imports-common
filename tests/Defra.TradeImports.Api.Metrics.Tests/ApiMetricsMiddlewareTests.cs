@@ -97,7 +97,7 @@ public class ApiMetricsMiddlewareTests
         _context.SetEndpoint(routedEndpoint);
         _nextDelegateMock.When(d => d.Invoke(Arg.Any<HttpContext>())).Throw(new Exception("Test exception"));
         
-        await _sut.InvokeAsync(_context, _nextDelegateMock);
+        await Assert.ThrowsAsync<Exception>(() => _sut.InvokeAsync(_context, _nextDelegateMock));
         
         _context.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
         _requestMetricsMock.Received(1).RequestFaulted(

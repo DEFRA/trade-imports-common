@@ -18,6 +18,7 @@ public class ApiMetricsMiddleware(IOptions<ApiMetricsOptions> apiMetricsOptions,
         catch (Exception ex)
         {
             requestMetrics.RequestFaulted(path, context.Request.Method, context.Response.StatusCode, ex);
+            throw;
         }
         finally
         {
