@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Defra.TradeImports.Api.Metrics</AssemblyName>
+    <RootNamespace>Defra.TradeImports.Api.Metrics</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Defra.TradeImports.Api.Metrics</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <PackageDescription>Defra Trade Imports Api Metrics</PackageDescription>
+    <Company>DEFRA</Company>
+    <Authors>DEFRA</Authors>
+    <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.CloudWatch.EMF" Version="2.2.0" />
+  </ItemGroup>
+</Project>
