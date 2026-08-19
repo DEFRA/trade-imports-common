@@ -35,6 +35,8 @@ The `IgnoredPathPrefixes` allows for the configuration of any URL path prefixes 
 }
 ```
 
+Note - if you are using the EmfExporter to publish metrics to CloudWatch, the `MeterName` configuration value needs to match the meter name value that is passed to the UseEmfExporter() extension method.
+
 ### Usage
 
 1. Add a reference to this Nuget package:
