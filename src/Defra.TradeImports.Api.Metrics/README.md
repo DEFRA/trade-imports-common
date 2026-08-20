@@ -57,3 +57,5 @@ builder.Services.AddApiMetrics()
 ```csharp
 app.UseMiddleware<ApiMetricsMiddleware>();
 ```
+
+Note - ensure this middleware is registered before your Error Handling Middleware. If you do not have Error Handling Middleware, you should consider what to do with Exceptions as this API Metrics Middleware will rethrow exceptions, it is not concerned with exception handling.

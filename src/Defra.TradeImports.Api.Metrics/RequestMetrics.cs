@@ -8,7 +8,7 @@ namespace Defra.TradeImports.Api.Metrics;
 public interface IRequestMetrics
 {
     void RequestCompleted(string requestPath, string httpMethod, int statusCode, double milliseconds);
-    void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception exception);
+    void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception? exception = null);
 }
 
 public class RequestMetrics : IRequestMetrics
@@ -46,10 +46,15 @@ public class RequestMetrics : IRequestMetrics
         _requestDuration.Record(milliseconds, BuildTags(requestPath, httpMethod, statusCode));
     }
 
-    public void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception exception)
+    public void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception? exception = null)
     {
         var tagList = BuildTags(requestPath, httpMethod, statusCode);
-        tagList.Add(MetricsConstants.RequestTags.ExceptionType, exception.GetType().Name);
+        
+        if (exception is not null)
+        {
+            tagList.Add(MetricsConstants.RequestTags.ExceptionType, exception.GetType().Name);
+        }
+
         _requestsFaulted.Add(1, tagList);
     }
 

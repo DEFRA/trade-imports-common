@@ -10,26 +10,35 @@ public class ApiMetricsMiddleware(IOptions<ApiMetricsOptions> apiMetricsOptions,
     {
         var startingTimestamp = TimeProvider.System.GetTimestamp();
         var path = (context.GetEndpoint() as RouteEndpoint)?.RoutePattern.RawText ?? "unknown";
-
+        var exceptionFaultRecorded = false;
+        
         try
         {
             await next(context);
         }
         catch (Exception ex)
         {
+            exceptionFaultRecorded = true;
             requestMetrics.RequestFaulted(path, context.Request.Method, context.Response.StatusCode, ex);
             throw;
         }
         finally
         {
-            if (!IgnoreRequest(path))
+            if (!IgnoreRequest(path)  && !exceptionFaultRecorded)
             {
-                requestMetrics.RequestCompleted(
-                    path,
-                    context.Request.Method,
-                    context.Response.StatusCode,
-                    TimeProvider.System.GetElapsedTime(startingTimestamp).TotalMilliseconds
-                );
+                if (context.Response.StatusCode is >= 200 and < 300)
+                {
+                    requestMetrics.RequestCompleted(
+                        path,
+                        context.Request.Method,
+                        context.Response.StatusCode,
+                        TimeProvider.System.GetElapsedTime(startingTimestamp).TotalMilliseconds
+                    );
+                }
+                else
+                {
+                    requestMetrics.RequestFaulted(path, context.Request.Method, context.Response.StatusCode);
+                }
             }
         }
     }

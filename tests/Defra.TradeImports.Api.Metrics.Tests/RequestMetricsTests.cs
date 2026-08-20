@@ -93,9 +93,10 @@ public class RequestMetricsTests
 
         metricsService.RequestFaulted("/some-url-path", "GET", 500, new Exception("Some error 1"));
         metricsService.RequestFaulted("/some-other-url-path", "POST", 501, new Exception("Some error 2"));
+        metricsService.RequestFaulted("/exception-handled-path", "PUT", 502);
 
         var faultedMeasurements = requestFaultedCollector.GetMeasurementSnapshot();
-        faultedMeasurements.Count.Should().Be(2);
+        faultedMeasurements.Count.Should().Be(3);
         faultedMeasurements[0].Value.Should().Be(1);
         faultedMeasurements[0].ContainsTags(MetricsConstants.RequestTags.RequestPath).Should().BeTrue();
         faultedMeasurements[0].Tags[MetricsConstants.RequestTags.RequestPath].Should().Be("/some-url-path");
@@ -115,5 +116,14 @@ public class RequestMetricsTests
         faultedMeasurements[1].Tags[MetricsConstants.RequestTags.StatusCode].Should().Be(501);
         faultedMeasurements[1].ContainsTags(MetricsConstants.RequestTags.ExceptionType).Should().BeTrue();
         faultedMeasurements[1].Tags[MetricsConstants.RequestTags.ExceptionType].Should().Be("Exception");
+        
+        faultedMeasurements[2].Value.Should().Be(1);
+        faultedMeasurements[2].ContainsTags(MetricsConstants.RequestTags.RequestPath).Should().BeTrue();
+        faultedMeasurements[2].Tags[MetricsConstants.RequestTags.RequestPath].Should().Be("/exception-handled-path");
+        faultedMeasurements[2].ContainsTags(MetricsConstants.RequestTags.HttpMethod).Should().BeTrue();
+        faultedMeasurements[2].Tags[MetricsConstants.RequestTags.HttpMethod].Should().Be("PUT");
+        faultedMeasurements[2].ContainsTags(MetricsConstants.RequestTags.StatusCode).Should().BeTrue();
+        faultedMeasurements[2].Tags[MetricsConstants.RequestTags.StatusCode].Should().Be(502);
+        faultedMeasurements[2].ContainsTags(MetricsConstants.RequestTags.ExceptionType).Should().BeFalse();
     }
 }
