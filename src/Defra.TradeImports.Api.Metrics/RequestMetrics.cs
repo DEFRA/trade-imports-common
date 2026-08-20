@@ -7,8 +7,18 @@ namespace Defra.TradeImports.Api.Metrics;
 
 public interface IRequestMetrics
 {
-    void RequestCompleted(string requestPath, string httpMethod, int statusCode, double milliseconds);
-    void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception? exception = null);
+    void RequestCompleted(
+        string requestPath,
+        string httpMethod,
+        int statusCode,
+        double milliseconds
+    );
+    void RequestFaulted(
+        string requestPath,
+        string httpMethod,
+        int statusCode,
+        Exception? exception = null
+    );
 }
 
 public class RequestMetrics : IRequestMetrics
@@ -32,24 +42,34 @@ public class RequestMetrics : IRequestMetrics
             nameof(Unit.COUNT),
             "Count of request faults"
         );
-        
+
         _requestDuration = meter.CreateHistogram<double>(
             MetricsConstants.InstrumentNames.RequestDuration,
             nameof(Unit.MILLISECONDS),
             "Duration of request"
         );
     }
-    
-    public void RequestCompleted(string requestPath, string httpMethod, int statusCode, double milliseconds)
+
+    public void RequestCompleted(
+        string requestPath,
+        string httpMethod,
+        int statusCode,
+        double milliseconds
+    )
     {
         _requestsReceived.Add(1, BuildTags(requestPath, httpMethod, statusCode));
         _requestDuration.Record(milliseconds, BuildTags(requestPath, httpMethod, statusCode));
     }
 
-    public void RequestFaulted(string requestPath, string httpMethod, int statusCode, Exception? exception = null)
+    public void RequestFaulted(
+        string requestPath,
+        string httpMethod,
+        int statusCode,
+        Exception? exception = null
+    )
     {
         var tagList = BuildTags(requestPath, httpMethod, statusCode);
-        
+
         if (exception is not null)
         {
             tagList.Add(MetricsConstants.RequestTags.ExceptionType, exception.GetType().Name);

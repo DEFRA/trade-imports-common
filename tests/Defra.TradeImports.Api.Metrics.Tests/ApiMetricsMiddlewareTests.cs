@@ -1,7 +1,5 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
@@ -29,14 +27,7 @@ public class ApiMetricsMiddlewareTests
     [Fact]
     public async Task Should_Record_Completed_Requests()
     {
-        var routedEndpoint = new RouteEndpoint(
-            async c => await c.Response.WriteAsync("Test"),
-            RoutePatternFactory.Parse("/some-path"),
-            0,
-            null,
-            null
-        );
-        _context.SetEndpoint(routedEndpoint);
+        _context.Request.Path =  new PathString("/some-path");
         
         await _sut.InvokeAsync(_context, _nextDelegateMock);
         
@@ -69,14 +60,7 @@ public class ApiMetricsMiddlewareTests
     [Fact]
     public async Task Should_Not_Record_Ignored_Requests()
     {
-        var routedEndpoint = new RouteEndpoint(
-            async c => await c.Response.WriteAsync("Test"),
-            RoutePatternFactory.Parse("/some-ignored-path"),
-            0,
-            null,
-            null
-        );
-        _context.SetEndpoint(routedEndpoint);
+        _context.Request.Path =  new PathString("/some-ignored-path");
         
         await _sut.InvokeAsync(_context, _nextDelegateMock);
         
@@ -94,14 +78,7 @@ public class ApiMetricsMiddlewareTests
     public async Task When_Exception_Occurs_Should_Record_Faulted_Requests()
     {
         _context.Response.StatusCode = StatusCodes.Status200OK;
-        var routedEndpoint = new RouteEndpoint(
-            async c => await c.Response.WriteAsync("Test"),
-            RoutePatternFactory.Parse("/some-path"),
-            0,
-            null,
-            null
-        );
-        _context.SetEndpoint(routedEndpoint);
+        _context.Request.Path =  new PathString("/some-path");
         var thrownException = new Exception("Test exception");
         _nextDelegateMock.When(d => d.Invoke(Arg.Any<HttpContext>())).Throw(thrownException);
         
@@ -126,14 +103,7 @@ public class ApiMetricsMiddlewareTests
     public async Task When_Response_Is_Not_Successful_Should_Record_Faulted_Requests()
     {
         _context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        var routedEndpoint = new RouteEndpoint(
-            async c => await c.Response.WriteAsync("Test"),
-            RoutePatternFactory.Parse("/some-path"),
-            0,
-            null,
-            null
-        );
-        _context.SetEndpoint(routedEndpoint);
+        _context.Request.Path =  new PathString("/some-path");
         
         await _sut.InvokeAsync(_context, _nextDelegateMock);
         
@@ -144,8 +114,8 @@ public class ApiMetricsMiddlewareTests
             Arg.Any<int>(),
             Arg.Any<double>());
         _requestMetricsMock.Received(1).RequestFaulted(
-            Arg.Any<string>(),
-            Arg.Any<string>(),
-            Arg.Any<int>());
+            Arg.Is<string>("/some-path"),
+            Arg.Is<string>("GET"),
+            Arg.Is(500));
     }
 }

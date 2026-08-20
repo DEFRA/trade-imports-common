@@ -8,7 +8,7 @@ public static class MetricsConstants
         public const string RequestFaulted = nameof(RequestFaulted);
         public const string RequestDuration = nameof(RequestDuration);
     }
-    
+
     public static class RequestTags
     {
         public const string Service = nameof(Service);
