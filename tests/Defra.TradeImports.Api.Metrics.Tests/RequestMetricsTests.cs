@@ -19,12 +19,13 @@ public class RequestMetricsTests
 
     private static ServiceProvider CreateServiceProvider()
     {
-        var settings = new ApiMetricsOptions {
+        var settings = new ApiMetricsOptions
+        {
             MeterName = "RequestMetricsTests",
-            IgnoredPathPrefixes = [ "/some-ignored-path" ]
+            IgnoredPathPrefixes = ["/some-ignored-path"],
         };
         var options = Options.Create(settings);
-        
+
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddMetrics();
         serviceCollection.AddSingleton(options);
@@ -37,7 +38,7 @@ public class RequestMetricsTests
     {
         return new MetricCollector<T>(_meterFactory, nameof(RequestMetricsTests), instrumentName);
     }
-    
+
     [Fact]
     public void RecordRequestCompleted_ShouldContainMeasurement()
     {
@@ -65,7 +66,7 @@ public class RequestMetricsTests
         receivedMeasurements[1].Tags[MetricsConstants.RequestTags.HttpMethod].Should().Be("POST");
         receivedMeasurements[1].ContainsTags(MetricsConstants.RequestTags.StatusCode).Should().BeTrue();
         receivedMeasurements[1].Tags[MetricsConstants.RequestTags.StatusCode].Should().Be(202);
-        
+
         var durationMeasurements = requestDurationCollector.GetMeasurementSnapshot();
         durationMeasurements.Count.Should().Be(2);
         durationMeasurements[0].Value.Should().Be(123);
@@ -84,7 +85,7 @@ public class RequestMetricsTests
         durationMeasurements[1].ContainsTags(MetricsConstants.RequestTags.StatusCode).Should().BeTrue();
         durationMeasurements[1].Tags[MetricsConstants.RequestTags.StatusCode].Should().Be(202);
     }
-    
+
     [Fact]
     public void RecordRequestFaulted_ShouldContainMeasurement()
     {
@@ -116,7 +117,7 @@ public class RequestMetricsTests
         faultedMeasurements[1].Tags[MetricsConstants.RequestTags.StatusCode].Should().Be(501);
         faultedMeasurements[1].ContainsTags(MetricsConstants.RequestTags.ExceptionType).Should().BeTrue();
         faultedMeasurements[1].Tags[MetricsConstants.RequestTags.ExceptionType].Should().Be("Exception");
-        
+
         faultedMeasurements[2].Value.Should().Be(1);
         faultedMeasurements[2].ContainsTags(MetricsConstants.RequestTags.RequestPath).Should().BeTrue();
         faultedMeasurements[2].Tags[MetricsConstants.RequestTags.RequestPath].Should().Be("/exception-handled-path");

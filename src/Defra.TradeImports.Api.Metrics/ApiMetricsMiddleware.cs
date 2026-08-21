@@ -8,11 +8,43 @@ public class ApiMetricsMiddleware(
     IRequestMetrics requestMetrics
 ) : IMiddleware
 {
+    private Exception? Exception { get; set; }
+    
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var startingTimestamp = TimeProvider.System.GetTimestamp();
         var path = context.Request.Path.HasValue ? context.Request.Path.Value : "unknown";
-        var exceptionFaultRecorded = false;
+
+        if (IgnoreRequest(path))
+        {
+            await next(context);
+            return;
+        }
+
+        context.Response.OnStarting(capturedState =>
+        {
+            var elapsed = TimeProvider.System.GetElapsedTime(startingTimestamp).TotalMilliseconds;
+            var stateException = ((ApiMetricsMiddleware)capturedState).Exception;
+
+            requestMetrics.RequestCompleted(
+                path,
+                context.Request.Method,
+                context.Response.StatusCode,
+                elapsed
+            );
+
+            if (stateException is not null || context.Response.StatusCode is < 200 or > 299)
+            {
+                requestMetrics.RequestFaulted(
+                    path,
+                    context.Request.Method,
+                    context.Response.StatusCode,
+                    stateException
+                );
+            }
+
+            return Task.CompletedTask;
+        }, this);
 
         try
         {
@@ -20,37 +52,8 @@ public class ApiMetricsMiddleware(
         }
         catch (Exception ex)
         {
-            exceptionFaultRecorded = true;
-            requestMetrics.RequestFaulted(
-                path,
-                context.Request.Method,
-                context.Response.StatusCode,
-                ex
-            );
+            Exception = ex;
             throw;
-        }
-        finally
-        {
-            if (!IgnoreRequest(path) && !exceptionFaultRecorded)
-            {
-                if (context.Response.StatusCode is >= 200 and < 300)
-                {
-                    requestMetrics.RequestCompleted(
-                        path,
-                        context.Request.Method,
-                        context.Response.StatusCode,
-                        TimeProvider.System.GetElapsedTime(startingTimestamp).TotalMilliseconds
-                    );
-                }
-                else
-                {
-                    requestMetrics.RequestFaulted(
-                        path,
-                        context.Request.Method,
-                        context.Response.StatusCode
-                    );
-                }
-            }
         }
     }
 
