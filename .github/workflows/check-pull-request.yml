@@ -41,8 +41,6 @@ jobs:
       #     file: ./Dockerfile
       #     push: false
       #     tags: trade-imports-data-api:latest
-      # - name: Check with Trivy
-      #   run: docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image trade-imports-data-api:latest --ignore-unfixed
       - name: Pack NuGets
         if: github.actor != 'dependabot[bot]'
         env:
@@ -52,6 +50,14 @@ jobs:
           echo "Building a pre-release package for PR #$PR_NUMBER"
           dotnet pack --configuration Release -o ./nupkg \
             /p:VersionSuffix="pr-$PR_NUMBER.$BUILD_NUMBER"
+      - name: Check with Trivy
+        run: |
+          docker run -v "$PWD":/workdir -w /workdir \
+            aquasec/trivy:0.74.0 fs \
+            --scanners vuln \
+            --ignore-unfixed \
+            --exit-code 1 \
+            .
       - name: Publish NuGets
         if: github.actor != 'dependabot[bot]'
         run: |
