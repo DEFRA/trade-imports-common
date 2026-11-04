@@ -14,7 +14,7 @@ namespace Defra.TradeImports.SMB.CompressedSerializer;
 public class CompressedJsonMessageSerializer
 	: IMessageSerializer,
 		IMessageSerializer<string>,
-		IMessageSerializerProvider
+		IMessageSerializerProvider, ICompressedJsonMessageEncoder
 {
 	private static readonly string GzipBase64 = "gzip, base64";
 	private const int CompressionThreshold = 256 * 1000;
@@ -144,38 +144,18 @@ public class CompressedJsonMessageSerializer
 		object message,
 		object transportMessage
 	)
-	{
-		// Serialize once to string (needed anyway for string transport)
-		string json = JsonSerializer.Serialize(message, messageType, Options);
+    {
+        var encoded = Encode(messageType, message, CompressionThreshold);
 
-		// HOT PATH: no compression
-		if (json.Length <= CompressionThreshold)
-			return json;
+        if (encoded.contentEncoding != null)
+        {
+            headers["Content-Encoding"] = GzipBase64;
+        }
 
-		headers["Content-Encoding"] = GzipBase64;
+        return encoded.content;
+    }
 
-		using var memoryStream = new MemoryStream();
-
-		// Leave stream open so we can read after dispose
-		using (var gzip = new GZipStream(
-			       memoryStream,
-			       CompressionLevel.Fastest,
-			       leaveOpen: true))
-		{
-			using var writer = new StreamWriter(
-				gzip,
-				Encoding.UTF8,
-				bufferSize: 1024,
-				leaveOpen: true);
-
-			writer.Write(json);
-		}
-
-		// No extra copy besides Base64 (unavoidable)
-		return Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length);
-	}
-
-	public object Deserialize(
+    public object Deserialize(
 		Type messageType,
 		IReadOnlyDictionary<string, object> headers,
 		string payload,
@@ -183,7 +163,7 @@ public class CompressedJsonMessageSerializer
 	)
 	{
 		return !TryGetGzip(headers)
-			? JsonSerializer.Deserialize(payload, messageType, Options)! // HOT PATH: no compression
+			? JsonSerializer.Deserialize(payload, messageType)! // HOT PATH: no compression
 			: DeserializeGzip(Convert.FromBase64String(payload), messageType);  // COLD PATH: gzip
 	}
 
@@ -193,5 +173,40 @@ public class CompressedJsonMessageSerializer
 
 	public IMessageSerializer GetSerializer(string path) => this;
 
-	#endregion
+    #endregion
+
+    public (string content, string? contentEncoding) Encode(
+        Type messageType,
+        object message,
+        int compressionThreshold
+    )
+    {
+        // Serialize once to string (needed anyway for string transport)
+        string json = JsonSerializer.Serialize(message, messageType, Options);
+
+        // HOT PATH: no compression
+        if (json.Length <= compressionThreshold)
+            return (json, null);
+
+        using var memoryStream = new MemoryStream();
+
+        // Leave stream open so we can read after dispose
+        using (var gzip = new GZipStream(memoryStream, CompressionLevel.Fastest, leaveOpen: true))
+        {
+            using var writer = new StreamWriter(
+                gzip,
+                Encoding.UTF8,
+                bufferSize: 1024,
+                leaveOpen: true
+            );
+
+            writer.Write(json);
+        }
+
+        // No extra copy besides Base64 (unavoidable)
+        return (
+            Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length),
+            GzipBase64
+        );
+    }
 }
