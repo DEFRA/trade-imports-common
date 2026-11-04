@@ -7,7 +7,7 @@
     <RootNamespace>Defra.TradeImports.Messaging</RootNamespace>
     <IsPackable>true</IsPackable>
     <PackageId>Defra.TradeImports.Messaging</PackageId>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.3.0</VersionPrefix>
     <PackageDescription>Defra Trade Imports SNS publishing and SQS consuming, with tracing, metrics and logging middleware</PackageDescription>
     <Company>DEFRA</Company>
     <Authors>DEFRA</Authors>

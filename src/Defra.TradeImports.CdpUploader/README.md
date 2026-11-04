@@ -37,11 +37,20 @@ var upload = await uploader.Initiate(new InitiateUploadRequest
     MimeTypes = ["application/pdf"],
 }, ct);
 
-await uploader.Upload(upload.UploadUrl!, bytesOrStream, "report.pdf", ct);
+await uploader.Upload(upload.UploadUrl!, bytesOrStream, "report.pdf", "application/pdf", ct);
 ```
 
-`Upload` sends a binary (API) upload with an `x-filename` header. When the uploader runs locally it
-returns an absolute `uploadUrl`; only its path is used, against `BaseUrl`.
+`Upload` sends a binary (API) upload with an `x-filename` header and the file's content type
+(`application/octet-stream` when none is given).
+
+**`MimeTypes` is checked against the content type you declare on the upload, not the type the
+uploader detects.** An upload declared as `application/octet-stream` is rejected
+(`FILE_INVALID_TYPE`) whenever `MimeTypes` is set. A file declared as `application/pdf` is accepted
+even if it is really something else; the result's `DetectedContentType` shows what it actually is,
+so check that too if the declared type isn't trusted.
+
+When the uploader runs locally it returns an absolute `uploadUrl`; only its path is used, against
+`BaseUrl`.
 
 For files the uploader should fetch itself, set `DownloadUrls` instead of `Redirect`.
 
