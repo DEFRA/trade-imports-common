@@ -32,19 +32,31 @@ public interface ICdpUploaderClient
     /// uploader quarantines and scans it asynchronously; follow progress with
     /// <see cref="GetStatus"/> or the callback.
     /// </summary>
+    /// <param name="uploadUrl">The <c>uploadUrl</c> from <see cref="Initiate"/>; relative or absolute.</param>
+    /// <param name="content">The file.</param>
+    /// <param name="fileName">Recorded by the uploader as the file's name.</param>
+    /// <param name="contentType">
+    /// The file's type, sent as the upload's Content-Type (default <c>application/octet-stream</c>).
+    /// The uploader checks the initiate request's <c>mimeTypes</c> against this declared type, not
+    /// the type it detects, so set it when <c>mimeTypes</c> is used, and compare
+    /// <see cref="UploadedFile.DetectedContentType"/> in the result if the declared type is not trusted.
+    /// </param>
+    /// <param name="cancellationToken">Cancels the request.</param>
     Task Upload(
         string uploadUrl,
         Stream content,
         string fileName,
-        CancellationToken cancellationToken
+        string? contentType = null,
+        CancellationToken cancellationToken = default
     );
 
-    /// <inheritdoc cref="Upload(string, Stream, string, CancellationToken)"/>
+    /// <inheritdoc cref="Upload(string, Stream, string, string?, CancellationToken)"/>
     Task Upload(
         string uploadUrl,
         byte[] content,
         string fileName,
-        CancellationToken cancellationToken
+        string? contentType = null,
+        CancellationToken cancellationToken = default
     );
 
     /// <summary>The upload's state; null if the uploader does not know the upload id.</summary>
@@ -101,15 +113,17 @@ public class CdpUploaderClient(HttpClient httpClient, IOptions<CdpUploaderOption
         string uploadUrl,
         byte[] content,
         string fileName,
-        CancellationToken cancellationToken
-    ) => Upload(uploadUrl, new ByteArrayContent(content), fileName, cancellationToken);
+        string? contentType = null,
+        CancellationToken cancellationToken = default
+    ) => Send(uploadUrl, new ByteArrayContent(content), fileName, contentType, cancellationToken);
 
     public Task Upload(
         string uploadUrl,
         Stream content,
         string fileName,
-        CancellationToken cancellationToken
-    ) => Upload(uploadUrl, new StreamContent(content), fileName, cancellationToken);
+        string? contentType = null,
+        CancellationToken cancellationToken = default
+    ) => Send(uploadUrl, new StreamContent(content), fileName, contentType, cancellationToken);
 
     public async Task<UploadStatusResponse?> GetStatus(
         string uploadId,
@@ -129,16 +143,19 @@ public class CdpUploaderClient(HttpClient httpClient, IOptions<CdpUploaderOption
         return await response.Content.ReadFromJsonAsync<UploadStatusResponse>(cancellationToken);
     }
 
-    private async Task Upload(
+    private async Task Send(
         string uploadUrl,
         HttpContent content,
         string fileName,
+        string? contentType,
         CancellationToken cancellationToken
     )
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, ToRelative(uploadUrl));
         request.Content = content;
-        request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(
+            string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType
+        );
         request.Headers.TryAddWithoutValidation("x-filename", ToHeaderSafe(fileName));
 
         using var response = await Send(

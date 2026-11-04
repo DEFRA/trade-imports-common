@@ -175,7 +175,7 @@ public class CdpUploaderClientTests
                 "http://localhost:7337/upload-and-scan/u1",
                 "hello"u8.ToArray(),
                 "report.pdf",
-                CancellationToken.None
+                cancellationToken: CancellationToken.None
             );
 
         _handler
@@ -188,6 +188,17 @@ public class CdpUploaderClientTests
     }
 
     [Fact]
+    public async Task Upload_WithAContentType_DeclaresIt()
+    {
+        _handler.Respond(HttpStatusCode.Redirect, "");
+
+        await CreateClient()
+            .Upload("/upload-and-scan/u1", "%PDF"u8.ToArray(), "report.pdf", "application/pdf");
+
+        _handler.LastContentType.Should().Be("application/pdf");
+    }
+
+    [Fact]
     public async Task Upload_EncodesFileNamesThatAreNotValidHeaderValues()
     {
         _handler.Respond(HttpStatusCode.Redirect, "");
@@ -197,7 +208,7 @@ public class CdpUploaderClientTests
                 "/upload-and-scan/u1",
                 new MemoryStream([1]),
                 "résumé.pdf",
-                CancellationToken.None
+                cancellationToken: CancellationToken.None
             );
 
         _handler.Last!.Headers.GetValues("x-filename").Should().Equal("r%C3%A9sum%C3%A9.pdf");
@@ -212,7 +223,8 @@ public class CdpUploaderClientTests
         _handler.Respond(statusCode, "nope");
 
         var act = () =>
-            CreateClient().Upload("/upload-and-scan/u1", [1], "f", CancellationToken.None);
+            CreateClient()
+                .Upload("/upload-and-scan/u1", [1], "f", cancellationToken: CancellationToken.None);
 
         (await act.Should().ThrowAsync<CdpUploaderException>())
             .Which.StatusCode.Should()

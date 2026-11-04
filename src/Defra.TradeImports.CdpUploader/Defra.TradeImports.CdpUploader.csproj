@@ -7,7 +7,7 @@
     <RootNamespace>Defra.TradeImports.CdpUploader</RootNamespace>
     <IsPackable>true</IsPackable>
     <PackageId>Defra.TradeImports.CdpUploader</PackageId>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.2.0</VersionPrefix>
     <PackageDescription>Defra Trade Imports client for the CDP uploader (malware-scanned file uploads to S3)</PackageDescription>
     <Company>DEFRA</Company>
     <Authors>DEFRA</Authors>
