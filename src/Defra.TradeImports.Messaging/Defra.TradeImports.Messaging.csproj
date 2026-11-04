@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Defra.TradeImports.Messaging</AssemblyName>
+    <RootNamespace>Defra.TradeImports.Messaging</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Defra.TradeImports.Messaging</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <PackageDescription>Defra Trade Imports SNS publishing and SQS consuming, with tracing, metrics and logging middleware</PackageDescription>
+    <Company>DEFRA</Company>
+    <Authors>DEFRA</Authors>
+    <RepositoryUrl>https://github.com/DEFRA/trade-imports-common</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.3" />
+    <PackageReference Include="AWSSDK.SQS" Version="4.0.3" />
+    <PackageReference Include="Polly" Version="8.6.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Defra.TradeImports.Tracing\Defra.TradeImports.Tracing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Defra.TradeImports.Messaging.Tests" />
+  </ItemGroup>
+</Project>
