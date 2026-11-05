@@ -5,6 +5,7 @@ using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Defra.TradeImports.Messaging.Consuming;
 using Defra.TradeImports.Messaging.Consuming.Middleware;
+using Defra.TradeImports.Messaging.Encoding;
 using Defra.TradeImports.Messaging.Publishing;
 using Defra.TradeImports.Messaging.Publishing.Middleware;
 using Defra.TradeImports.Messaging.Resilience;
@@ -39,6 +40,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IPublishMiddleware, MetricsPublishMiddleware>();
         services.AddSingleton<IPublishMiddleware, TracingPublishMiddleware>();
+
+        services.AddSingleton<IMessageEncoder, GZipEncoder>();
 
         services.AddSingleton<IConsumeMiddleware, TracingConsumeMiddleware>();
         services.AddSingleton<IConsumeMiddleware, MetricsConsumeMiddleware>();
