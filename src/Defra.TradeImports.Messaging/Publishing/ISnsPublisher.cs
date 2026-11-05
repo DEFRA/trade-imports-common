@@ -9,6 +9,7 @@ public interface ISnsPublisher
         string? subject = null,
         string? duplicationId = null,
         string? messageGroupId = null,
+        int? compressionThresholdBytes = null,
         CancellationToken cancellationToken = default
     );
 
@@ -17,6 +18,7 @@ public interface ISnsPublisher
         T message,
         Dictionary<string, string>? headers = null,
         string? subject = null,
+        int? compressionThresholdBytes = null,
         CancellationToken cancellationToken = default
     )
         where T : IMessage;

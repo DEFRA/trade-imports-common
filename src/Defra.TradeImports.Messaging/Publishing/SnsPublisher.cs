@@ -1,12 +1,16 @@
-using System.Text.Json;
 using Amazon.SimpleNotificationService;
+
+using Defra.TradeImports.Messaging.Encoding;
 using Defra.TradeImports.Messaging.Extensions;
+
+using System.Text.Json;
 
 namespace Defra.TradeImports.Messaging.Publishing;
 
 /// <summary>Mirrors trade-gateway-publisher's <c>SnsPublisher</c>: a publish wrapped in a middleware pipeline.</summary>
 public class SnsPublisher(
     IAmazonSimpleNotificationService snsClient,
+    IMessageEncoder messageEncoder,
     IEnumerable<IPublishMiddleware>? middlewares = null
 ) : ISnsPublisher
 {
@@ -19,6 +23,7 @@ public class SnsPublisher(
         string? subject = null,
         string? duplicationId = null,
         string? messageGroupId = null,
+        int? compressionThresholdBytes = null,
         CancellationToken cancellationToken = default
     )
     {
@@ -27,6 +32,19 @@ public class SnsPublisher(
 
         if (string.IsNullOrWhiteSpace(messageBody))
             throw new ArgumentException("Message body is required.", nameof(messageBody));
+
+        // compress if required
+        if (headers?.ContainsKey(MessageHeaders.ContentEncoding) != true && compressionThresholdBytes > 0)
+        {
+            var encoded = messageEncoder.Encode(messageBody, compressionThresholdBytes.Value);
+            messageBody = encoded.content;
+
+            if (!string.IsNullOrWhiteSpace(encoded.contentEncoding))
+            {
+                headers ??= [];
+                headers.Add(MessageHeaders.ContentEncoding, encoded.contentEncoding);
+            }
+        }
 
         var context = new PublishContext
         {
@@ -60,6 +78,7 @@ public class SnsPublisher(
         T message,
         Dictionary<string, string>? headers = null,
         string? subject = null,
+        int? compressionThresholdBytes = null,
         CancellationToken cancellationToken = default
     )
         where T : IMessage
@@ -77,6 +96,7 @@ public class SnsPublisher(
             subject,
             message.DuplicationId,
             message.MessageGroupId,
+            compressionThresholdBytes,
             cancellationToken
         );
     }

@@ -10,7 +10,7 @@ public class MessageContext
 
     public required Type ConsumerType { get; init; }
 
-    public string Body => Message.Body;
+    public required string Body { get; init; }
 
     public string MessageId => Message.MessageId;
 
