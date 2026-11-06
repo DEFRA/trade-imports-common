@@ -196,10 +196,7 @@ public class SnsPublisherTests
         {
             Headers = new Dictionary<string, StringValues>
             {
-                [MessagingHeaders.TraceId] = "from-header",if (System.Text.Encoding.UTF8.GetByteCount(message) > compressionThresholdBytes)
-{
-    // compress
-}
+                [MessagingHeaders.TraceId] = "from-header",
             },
         };
 

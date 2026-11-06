@@ -1,6 +1,9 @@
 using System.IO.Compression;
 using Defra.TradeImports.Messaging.Encoding;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using NSubstitute;
 
 namespace Defra.TradeImports.Messaging.Tests.Encoding;
 
@@ -9,8 +12,8 @@ public class GZipEncoderTests
     [Fact]
     public void Encode_WithNegativeThreshold_ThrowsArgumentException()
     {
-        var encoder = new GZipEncoder();
-
+        var encoder = new GZipEncoder(NullLogger<GZipEncoder>.Instance);
+        
         var act = () => encoder.Encode("message", -1);
 
         act.Should().Throw<ArgumentException>();
@@ -25,7 +28,7 @@ public class GZipEncoderTests
         int threshold
     )
     {
-        var encoder = new GZipEncoder();
+        var encoder = new GZipEncoder(NullLogger<GZipEncoder>.Instance);
 
         var (content, contentEncoding) = encoder.Encode(message, threshold);
 
@@ -36,7 +39,7 @@ public class GZipEncoderTests
     [Fact]
     public void Encode_WithMessageAboveThreshold_ReturnsGzipBase64ThatRoundTrips()
     {
-        var encoder = new GZipEncoder();
+        var encoder = new GZipEncoder(NullLogger<GZipEncoder>.Instance);
         const string message = "This is a message that should be compressed";
 
         var (content, contentEncoding) = encoder.Encode(message, 5);
@@ -48,7 +51,7 @@ public class GZipEncoderTests
     [Fact]
     public void Encode_WithZeroThresholdAndNonEmptyMessage_CompressesMessage()
     {
-        var encoder = new GZipEncoder();
+        var encoder = new GZipEncoder(NullLogger<GZipEncoder>.Instance);
 
         var (content, contentEncoding) = encoder.Encode("abc", 0);
 
@@ -57,6 +60,23 @@ public class GZipEncoderTests
         Decode(content).Should().Be("abc");
     }
 
+    [Fact]
+    public void Encode_WhenCompressed_LogsEncodedMessageSizeSuccessfully()
+    {
+        var logger = Substitute.For<ILogger<GZipEncoder>>();
+        logger.IsEnabled(LogLevel.Information).Returns(true);
+
+        var encoder = new GZipEncoder(logger);
+        encoder.Encode("This is a message that should be compressed", 5);
+
+        logger
+            .ReceivedCalls()
+            .Any(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
+            .Should()
+            .BeTrue();
+    }
+
+    
     private static string Decode(string encoded)
     {
         var compressed = Convert.FromBase64String(encoded);
