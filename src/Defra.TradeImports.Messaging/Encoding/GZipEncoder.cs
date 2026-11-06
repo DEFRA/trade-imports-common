@@ -17,7 +17,7 @@ namespace Defra.TradeImports.Messaging.Encoding
             var messageSizeBytes = System.Text.Encoding.UTF8.GetByteCount(message);
             
             // HOT PATH: no compression
-            if (System.Text.Encoding.UTF8.GetByteCount(message) <= compressionThresholdBytes)
+            if (messageSizeBytes <= compressionThresholdBytes)
                 return (message, null);
 
             using var memoryStream = new MemoryStream();
