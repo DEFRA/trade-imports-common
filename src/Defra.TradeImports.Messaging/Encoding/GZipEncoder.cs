@@ -2,7 +2,7 @@
 
 namespace Defra.TradeImports.Messaging.Encoding
 {
-    public class GZipEncoder : IMessageEncoder
+    public partial class GZipEncoder(ILogger<GZipEncoder> logger) : IMessageEncoder
     {
         public (string content, string? contentEncoding) Encode(
             string message,
@@ -14,6 +14,8 @@ namespace Defra.TradeImports.Messaging.Encoding
                 throw new ArgumentException("Value must be greater than 0", nameof(compressionThresholdBytes));
             }
 
+            var messageSizeBytes = System.Text.Encoding.UTF8.GetByteCount(message);
+            
             // HOT PATH: no compression
             if (System.Text.Encoding.UTF8.GetByteCount(message) <= compressionThresholdBytes)
                 return (message, null);
@@ -32,12 +34,16 @@ namespace Defra.TradeImports.Messaging.Encoding
 
                 writer.Write(message);
             }
-            
-            // No extra copy besides Base64 (unavoidable)
-            return (
-                Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length),
-                EncodingTypes.GzipBase64
-            );
+
+            var encoded = Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length);
+            var encodedSizeBytes = System.Text.Encoding.UTF8.GetByteCount(encoded);
+
+            LogEncodedMessageSuccessfully(logger, messageSizeBytes, encodedSizeBytes);
+
+            return (encoded, EncodingTypes.GzipBase64);
         }
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Encoded message of {InitialSizeBytes} to {ProcessedSizeBytes} bytes")]
+        public static partial void LogEncodedMessageSuccessfully(ILogger logger, long initialSizeBytes, long processedSizeBytes);
     }
 }
