@@ -141,11 +141,15 @@ public class MultipleRegistrationTests
             Configuration([]),
             services =>
             {
-                services.AddPublisher<OrderPlaced>(_ =>
-                    "arn:aws:sns:eu-west-2:000000000000:orders.fifo"
+                services.AddPublisher<OrderPlaced>(_ => new TopicPublisherOptions
+                    {
+                        TopicArn = "arn:aws:sns:eu-west-2:000000000000:orders.fifo"
+                    }
                 );
-                services.AddPublisher<RefundIssued>(_ =>
-                    "arn:aws:sns:eu-west-2:000000000000:refunds.fifo"
+                services.AddPublisher<RefundIssued>(_ => new TopicPublisherOptions
+                    {
+                        TopicArn = "arn:aws:sns:eu-west-2:000000000000:refunds.fifo"
+                    }
                 );
             }
         );
@@ -229,7 +233,7 @@ public class MultipleRegistrationTests
     {
         using var sp = Build(
             Configuration([]),
-            services => services.AddPublisher<OrderPlaced>(_ => "", "orders")
+            services => services.AddPublisher<OrderPlaced>(_ => new TopicPublisherOptions { TopicArn = "" }, "orders")
         );
 
         var act = () => sp.GetRequiredKeyedService<ITopicPublisher<OrderPlaced>>("orders");

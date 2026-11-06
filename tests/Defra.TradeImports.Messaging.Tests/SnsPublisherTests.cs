@@ -1,5 +1,6 @@
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
+using Defra.TradeImports.Messaging.Encoding;
 using Defra.TradeImports.Messaging.Publishing;
 using Defra.TradeImports.Messaging.Publishing.Middleware;
 using Defra.TradeImports.Tracing;
@@ -16,6 +17,10 @@ public class SnsPublisherTests
 
     private readonly IAmazonSimpleNotificationService _sns =
         Substitute.For<IAmazonSimpleNotificationService>();
+
+    private readonly IMessageEncoder _encoder =
+        Substitute.For<IMessageEncoder>();
+
     private PublishRequest? _sent;
 
     public SnsPublisherTests()
@@ -39,7 +44,7 @@ public class SnsPublisherTests
     [Fact]
     public async Task PublishAsync_Message_SendsItsDeduplicationAndGroupIds()
     {
-        await new SnsPublisher(_sns).PublishAsync(TopicArn, new GroupedMessage("1"));
+        await new SnsPublisher(_sns, _encoder).PublishAsync(TopicArn, new GroupedMessage("1"));
 
         _sent!.TopicArn.Should().Be(TopicArn);
         System
@@ -55,7 +60,7 @@ public class SnsPublisherTests
     [Fact]
     public async Task PublishAsync_MessageWithoutGroup_GroupsBySubject()
     {
-        await new SnsPublisher(_sns).PublishAsync(
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
             TopicArn,
             new UngroupedMessage("1"),
             subject: "subject"
@@ -68,7 +73,7 @@ public class SnsPublisherTests
     [Fact]
     public async Task PublishAsync_WithoutGroupOrSubject_UsesANewGroupPerMessage()
     {
-        await new SnsPublisher(_sns).PublishAsync(TopicArn, new UngroupedMessage("1"));
+        await new SnsPublisher(_sns, _encoder).PublishAsync(TopicArn, new UngroupedMessage("1"));
 
         _sent!.MessageGroupId.Should().NotBeNullOrWhiteSpace();
     }
@@ -76,7 +81,7 @@ public class SnsPublisherTests
     [Fact]
     public async Task PublishAsync_SendsHeadersAsStringAttributes()
     {
-        await new SnsPublisher(_sns).PublishAsync(
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
             TopicArn,
             "body",
             new Dictionary<string, string> { ["a"] = "b" }
@@ -87,11 +92,81 @@ public class SnsPublisherTests
     }
 
     [Fact]
+    public async Task PublishAsync_WithCompressionThreshold_EncodesMessageAndAddsContentEncodingHeader()
+    {
+        _encoder.Encode("body", 1).Returns(("encoded-body", "gzip, base64"));
+
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
+            TopicArn,
+            "body",
+            compressionThresholdBytes: 1
+        );
+
+        _sent!.Message.Should().Be("encoded-body");
+        _sent.MessageAttributes["Content-Encoding"].StringValue.Should().Be("gzip, base64");
+        _sent.MessageAttributes["Content-Encoding"].DataType.Should().Be("String");
+        _encoder.Received(1).Encode("body", 1);
+    }
+
+    [Fact]
+    public async Task PublishAsync_WithExistingContentEncodingHeader_DoesNotEncode()
+    {
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
+            TopicArn,
+            "body",
+            new Dictionary<string, string> { ["Content-Encoding"] = "identity" },
+            compressionThresholdBytes: 1
+        );
+
+        _sent!.Message.Should().Be("body");
+        _sent.MessageAttributes["Content-Encoding"].StringValue.Should().Be("identity");
+        _encoder.DidNotReceive().Encode(Arg.Any<string>(), Arg.Any<int>());
+    }
+
+    [Fact]
+    public async Task PublishAsync_WithCompressionThresholdAndNoEncodingTypeFromEncoder_DoesNotAddHeader()
+    {
+        _encoder.Encode("body", 1).Returns(("encoded-body", null));
+
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
+            TopicArn,
+            "body",
+            compressionThresholdBytes: 1
+        );
+
+        _sent!.Message.Should().Be("encoded-body");
+        _sent.MessageAttributes.Should().NotContainKey("Content-Encoding");
+    }
+
+    [Fact]
+    public async Task PublishAsync_WithNullCompressionThreshold_DoesNotEncode()
+    {
+        await new SnsPublisher(_sns, _encoder).PublishAsync(TopicArn, "body", compressionThresholdBytes: null);
+
+        _encoder.DidNotReceive().Encode(Arg.Any<string>(), Arg.Any<int>());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public async Task PublishAsync_WithNonPositiveCompressionThreshold_DoesNotEncode(int compressionThreshold)
+    {
+        await new SnsPublisher(_sns, _encoder).PublishAsync(
+            TopicArn,
+            "body",
+            compressionThresholdBytes: compressionThreshold
+        );
+
+        _encoder.DidNotReceive().Encode(Arg.Any<string>(), Arg.Any<int>());
+    }
+
+    [Fact]
     public async Task PublishAsync_RunsMiddlewareInRegistrationOrder()
     {
         var calls = new List<string>();
         var publisher = new SnsPublisher(
             _sns,
+            _encoder,
             [new Recording("first", calls), new Recording("second", calls)]
         );
 
@@ -105,7 +180,7 @@ public class SnsPublisherTests
     [InlineData(TopicArn, "")]
     public async Task PublishAsync_RequiresTopicAndBody(string topicArn, string body)
     {
-        var act = () => new SnsPublisher(_sns).PublishAsync(topicArn, body);
+        var act = () => new SnsPublisher(_sns, _encoder).PublishAsync(topicArn, body);
 
         await act.Should().ThrowAsync<ArgumentException>();
     }
@@ -125,7 +200,7 @@ public class SnsPublisherTests
             },
         };
 
-        await new SnsPublisher(_sns, [new TracingPublishMiddleware(accessor, values)]).PublishAsync(
+        await new SnsPublisher(_sns, _encoder,[new TracingPublishMiddleware(accessor, values)]).PublishAsync(
             TopicArn,
             "body"
         );
@@ -147,6 +222,7 @@ public class SnsPublisherTests
 
         await new SnsPublisher(
             _sns,
+            _encoder,
             [new TracingPublishMiddleware(new TraceContextAccessor(), values)]
         ).PublishAsync(TopicArn, "body");
 
@@ -158,6 +234,7 @@ public class SnsPublisherTests
     {
         await new SnsPublisher(
             _sns,
+            _encoder,
             [
                 new TracingPublishMiddleware(
                     new TraceContextAccessor(),

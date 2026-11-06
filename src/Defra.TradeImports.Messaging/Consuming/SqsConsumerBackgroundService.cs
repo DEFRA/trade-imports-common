@@ -81,6 +81,7 @@ public class SqsConsumerBackgroundService<TConsumer>(
 
         var context = new MessageContext
         {
+            Body = message.GetDecodedBody(),
             Message = message,
             QueueUrl = QueueUrl,
             ConsumerType = typeof(TConsumer),

@@ -7,6 +7,8 @@ public class TopicPublisherOptions
 {
     [Required]
     public string TopicArn { get; set; } = null!;
+
+    public int? MessageCompressionThresholdBytes { get; set; } = null;
 }
 
 /// <summary>
@@ -27,16 +29,21 @@ public interface ITopicPublisher<in TMessage>
     );
 }
 
-public class TopicPublisher<TMessage>(ISnsPublisher publisher, string topicArn)
+public class TopicPublisher<TMessage>(ISnsPublisher publisher, TopicPublisherOptions publisherOptions)
     : ITopicPublisher<TMessage>
     where TMessage : IMessage
 {
-    public string TopicArn { get; } = topicArn;
+    public string TopicArn { get; } = publisherOptions.TopicArn;
+
+    public int? MessageCompressionThresholdBytes { get; } = publisherOptions.MessageCompressionThresholdBytes;
 
     public Task PublishAsync(
         TMessage message,
         Dictionary<string, string>? headers = null,
         string? subject = null,
         CancellationToken cancellationToken = default
-    ) => publisher.PublishAsync(TopicArn, message, headers, subject, cancellationToken);
+    )
+    {
+        return publisher.PublishAsync(TopicArn, message, headers, subject, MessageCompressionThresholdBytes, cancellationToken);
+    }
 }

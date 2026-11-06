@@ -5,6 +5,7 @@ using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Defra.TradeImports.Messaging.Consuming;
 using Defra.TradeImports.Messaging.Consuming.Middleware;
+using Defra.TradeImports.Messaging.Encoding;
 using Defra.TradeImports.Messaging.Publishing;
 using Defra.TradeImports.Messaging.Publishing.Middleware;
 using Defra.TradeImports.Messaging.Resilience;
@@ -39,6 +40,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IPublishMiddleware, MetricsPublishMiddleware>();
         services.AddSingleton<IPublishMiddleware, TracingPublishMiddleware>();
+
+        services.AddSingleton<IMessageEncoder, GZipEncoder>();
 
         services.AddSingleton<IConsumeMiddleware, TracingConsumeMiddleware>();
         services.AddSingleton<IConsumeMiddleware, MetricsConsumeMiddleware>();
@@ -163,20 +166,20 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddPublisher<TMessage>(
         this IServiceCollection services,
-        Func<IServiceProvider, string> topicArnFactory,
+        Func<IServiceProvider, TopicPublisherOptions?> optionsFactory,
         string? key = null
     )
         where TMessage : IMessage
     {
         ITopicPublisher<TMessage> Create(IServiceProvider sp)
         {
-            var topicArn = topicArnFactory(sp);
-            if (string.IsNullOrWhiteSpace(topicArn))
+            var topicOptions = optionsFactory(sp);
+            if (string.IsNullOrWhiteSpace(topicOptions?.TopicArn))
                 throw new InvalidOperationException(
                     $"No topic ARN configured for the {typeof(TMessage).Name} publisher{(key is null ? "" : $" '{key}'")}."
                 );
 
-            return new TopicPublisher<TMessage>(sp.GetRequiredService<ISnsPublisher>(), topicArn);
+            return new TopicPublisher<TMessage>(sp.GetRequiredService<ISnsPublisher>(), topicOptions);
         }
 
         if (key is null)
@@ -207,7 +210,7 @@ public static class ServiceCollectionExtensions
 
         return services.AddPublisher<TMessage>(
             sp =>
-                sp.GetRequiredService<IOptionsMonitor<TopicPublisherOptions>>().Get(name).TopicArn,
+                sp.GetRequiredService<IOptionsMonitor<TopicPublisherOptions>>().Get(name),
             key
         );
     }
