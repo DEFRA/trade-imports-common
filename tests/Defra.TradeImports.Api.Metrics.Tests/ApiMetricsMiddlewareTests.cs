@@ -34,12 +34,14 @@ public class ApiMetricsMiddlewareTests : TestServerBase
             );
     }
 
-    [Fact]
-    public async Task Should_Not_Record_Ignored_Requests()
+    [Theory]
+    [InlineData("/ignored-path")]
+    [InlineData("/ignored-template-path/1")]
+    public async Task Should_Not_Record_Ignored_Requests(string path)
     {
         SetupTestServer();
 
-        var response = await Assert.IsType<HttpClient>(TestClient).GetAsync("/ignored-path");
+        var response = await Assert.IsType<HttpClient>(TestClient).GetAsync(path);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -166,5 +168,33 @@ public class ApiMetricsMiddlewareTests : TestServerBase
             Arg.Any<string>(),
             Arg.Any<int>(),
             Arg.Any<Exception>());
+    }
+    
+    [Theory]
+    [InlineData("/template-path/1", "/template-path/{id}")]
+    [InlineData("/template-path/1/resource/2", "/template-path/{id}/resource/{resourceId}")]
+    public async Task Should_Record_Requests_Using_Path_Template(string path, string expectedPathRecorded)
+    {
+        SetupTestServer();
+
+        var response = await Assert.IsType<HttpClient>(TestClient).GetAsync(path);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        RequestMetricsMock
+            .Received(1)
+            .RequestCompleted(
+                Arg.Is(expectedPathRecorded),
+                Arg.Is<string>("GET"),
+                Arg.Is(200),
+                Arg.Any<double>()
+            );
+        RequestMetricsMock
+            .DidNotReceive()
+            .RequestFaulted(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<int>(),
+                Arg.Any<Exception>()
+            );
     }
 }

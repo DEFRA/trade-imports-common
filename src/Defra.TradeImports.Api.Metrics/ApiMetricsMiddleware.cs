@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 
 namespace Defra.TradeImports.Api.Metrics;
@@ -13,7 +14,7 @@ public class ApiMetricsMiddleware(
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var startingTimestamp = TimeProvider.System.GetTimestamp();
-        var path = context.Request.Path.HasValue ? context.Request.Path.Value : "unknown";
+        var path = (context.GetEndpoint() as RouteEndpoint)?.RoutePattern.RawText ?? "unknown";
 
         if (IgnoreRequest(path))
         {
