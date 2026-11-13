@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,7 @@ public abstract class TestServerBase : IDisposable
                             {
                                 ["ApiMetrics:MeterName"] = "TestMeterName",
                                 ["ApiMetrics:IgnoredPathPrefixes:0"] = "/ignored-path",
+                                ["ApiMetrics:IgnoredPathPrefixes:1"] = "/ignored-template-path/{id}",
                             }
                         );
                     })
@@ -60,15 +62,19 @@ public abstract class TestServerBase : IDisposable
                     })
                     .Configure(app =>
                     {
+                        app.UseRouting();
+
                         SetupMiddleware(app);
 
-                        app.UseRouting();
                         app.UseEndpoints(endpoints =>
                         {
                             endpoints.MapGet("/completing-path", () => Results.Ok());
                             endpoints.MapGet("/non-success-path", () => Results.NotFound());
                             endpoints.MapGet("/ignored-path", () => Results.Ok());
                             endpoints.MapGet("/faulting-path", string () => throw new Exception("Some exception"));
+                            endpoints.MapGet("/template-path/{id}", () => Results.Ok());
+                            endpoints.MapGet("/template-path/{id}/resource/{resourceId}", () => Results.Ok());
+                            endpoints.MapGet("/ignored-template-path/{id}", () => Results.Ok());
                         });
                     });
             })
