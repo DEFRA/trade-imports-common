@@ -173,6 +173,7 @@ public class ApiMetricsMiddlewareTests : TestServerBase
     [Theory]
     [InlineData("/template-path/1", "/template-path/{id}")]
     [InlineData("/template-path/1/resource/2", "/template-path/{id}/resource/{resourceId}")]
+    [InlineData("/template-path/1/resource/2?start=x&end=y", "/template-path/{id}/resource/{resourceId}")]
     public async Task Should_Record_Requests_Using_Path_Template(string path, string expectedPathRecorded)
     {
         SetupTestServer();
